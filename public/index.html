@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>شات لايف</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ========== شاشة الشات ========== -->
+<div id="chat-screen" style="display:none">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="header-right">
+      <span class="header-logo">KAWI</span>
+      <span id="room-name-header" class="room-title">#egypt</span>
+      <span class="classic-menu">Nickname</span>
+      <span class="classic-menu">Channel</span>
+      <span class="classic-menu">Help</span>
+    </div>
+    <div class="header-left">
+      <span id="my-badge" class="badge"></span>
+      <span id="my-name"  class="my-name"></span>
+      <button class="btn-icon" id="owner-panel-btn" style="display:none"
+        onclick="openOwnerPanel()" title="لوحة التحكم">⚙️</button>
+      <button class="btn-icon" onclick="logout()" title="خروج">🚪</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="chat-body">
+
+    <!-- رسائل -->
+    <div class="messages-area" id="messages-area"></div>
+
+    <!-- السايدبار -->
+    <div class="sidebar-right" id="sidebar-right">
+      <div class="sidebar-title">
+        الأعضاء
+        <span id="members-count" class="count-badge">0</span>
+      </div>
+      <div id="members-list" class="members-list"></div>
+
+      <button class="rooms-toggle-btn" onclick="toggleRoomsPanel()">Channel</button>
+      <div id="rooms-panel" class="rooms-panel hidden">
+        <div class="rooms-panel-title">الغرف المتاحة</div>
+        <div id="rooms-list" class="rooms-list-inner"></div>
+        <div class="create-room-area" id="create-room-section">
+          <input id="new-room-name" type="text" placeholder="اسم غرفة جديدة" class="input-sm" maxlength="30">
+          <button class="btn-sm" onclick="createRoom()" title="إنشاء غرفة">➕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="chat-footer">
+    <div class="private-indicator" id="private-indicator" style="display:none">
+      💬 محادثة خاصة مع <span id="private-with" style="font-weight:700"></span>
+      <button onclick="closePrivate()" title="إغلاق">✕</button>
+    </div>
+    <div class="input-row">
+      <button class="btn-icon" id="muted-icon" style="display:none" title="أنت مكتوم">🔇</button>
+      <div style="position:relative">
+        <button class="btn-icon option-btn" onclick="toggleEmojiPicker(event)" title="إيموجي">Option 🙂</button>
+        <div id="emoji-picker" style="display:none;position:absolute;bottom:44px;right:0;background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px;box-shadow:0 8px 32px rgba(0,0,0,0.13);width:272px;z-index:999">
+          <div style="display:flex;gap:4px;margin-bottom:8px;overflow-x:auto;padding-bottom:4px" id="emoji-cats"></div>
+          <div id="emoji-grid" style="display:grid;grid-template-columns:repeat(8,1fr);gap:2px;max-height:200px;overflow-y:auto"></div>
+        </div>
+      </div>
+      <input id="msg-input" type="text" placeholder="اكتب رسالة..." class="msg-input" maxlength="500" autocomplete="off">
+      <button class="btn-send" onclick="sendMessage()" title="إرسال">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== لوحة تحكم المالك ========== -->
+<div id="owner-panel" class="modal hidden">
+  <div class="modal-box wide">
+    <div class="modal-header">
+      <span>⚙️ لوحة تحكم المالك</span>
+      <button onclick="closeOwnerPanel()">✕</button>
+    </div>
+    <div class="owner-tabs">
+      <button class="otab active" onclick="ownerTab('online', this)">🟢 أونلاين</button>
+      <button class="otab"        onclick="ownerTab('users', this)">👥 الأعضاء</button>
+      <button class="otab"        onclick="ownerTab('private', this)">💬 الخاص</button>
+      <button class="otab"        onclick="ownerTab('broadcast', this)">📢 إعلان</button>
+      <button class="otab"        onclick="ownerTab('settings', this)">🔧 إعدادات</button>
+    </div>
+    <div id="owner-content" class="owner-content"></div>
+  </div>
+</div>
+
+<!-- ========== مودال عضو ========== -->
+<div id="member-modal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span id="member-modal-name" style="font-size:1rem"></span>
+      <button onclick="closeMemberModal()">✕</button>
+    </div>
+    <div id="member-modal-actions" class="member-actions"></div>
+  </div>
+</div>
+
+<!-- ========== إعلان ========== -->
+<div id="announcement-bar" class="announcement-bar hidden"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  // تحقق من الجلسة قبل أي شيء
+  if (!sessionStorage.getItem('livechat_auth')) {
+    window.location.replace('login.html');
+  }
+</script>
+<script src="client.js"></script>
+</body>
+</html>

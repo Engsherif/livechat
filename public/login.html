@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>شات لايف — دخول</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary:      #4f8ef7;
+      --primary-dark: #2c6ce4;
+      --danger:       #e74c3c;
+      --text:         #222;
+      --text-light:   #888;
+      --border:       #e3e6ef;
+      --bg:           #f5f6fa;
+      --white:        #ffffff;
+      --shadow:       0 8px 32px rgba(79,142,247,0.13);
+      --radius:       16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      min-height: 100dvh;
+      background: linear-gradient(135deg, #1a237e 0%, #283593 30%, #3949ab 60%, #4f8ef7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(79,142,247,0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(57,73,171,0.3) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* فقاعات */
+    .bubble { position: fixed; border-radius: 50%; background: rgba(255,255,255,0.06); animation: float linear infinite; pointer-events: none; }
+    .bubble:nth-child(1) { width:80px;  height:80px;  left:10%; bottom:-100px; animation-duration:12s; }
+    .bubble:nth-child(2) { width:50px;  height:50px;  left:25%; bottom:-100px; animation-duration:9s;  animation-delay:2s; }
+    .bubble:nth-child(3) { width:120px; height:120px; left:55%; bottom:-100px; animation-duration:15s; animation-delay:4s; }
+    .bubble:nth-child(4) { width:40px;  height:40px;  left:70%; bottom:-100px; animation-duration:10s; animation-delay:1s; }
+    .bubble:nth-child(5) { width:90px;  height:90px;  left:85%; bottom:-100px; animation-duration:13s; animation-delay:3s; }
+
+    @keyframes float {
+      0%   { transform: translateY(0) rotate(0deg);     opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.5; }
+      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* البطاقة */
+    .card {
+      background: rgba(255,255,255,0.97);
+      border-radius: 28px;
+      padding: 44px 40px 36px;
+      width: 420px;
+      max-width: 100%;
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 10;
+      animation: slideUp 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+
+    /* شعار */
+    .logo-area { text-align: center; margin-bottom: 32px; }
+    .logo-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(79,142,247,0.4);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 8px 24px rgba(79,142,247,0.4); }
+      50%       { box-shadow: 0 8px 32px rgba(79,142,247,0.7); }
+    }
+    .logo-title { font-size: 1.6rem; font-weight: 900; color: var(--text); }
+    .logo-sub   { font-size: 0.88rem; color: var(--text-light); margin-top: 4px; }
+
+    /* تبويبات */
+    .tabs {
+      display: flex;
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 24px;
+      gap: 2px;
+    }
+    .tab-btn {
+      flex: 1; padding: 10px 6px;
+      border: none; border-radius: 11px;
+      background: transparent; color: var(--text-light);
+      cursor: pointer; font-family: inherit;
+      font-size: 0.88rem; font-weight: 600;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .tab-btn.active {
+      background: var(--white); color: var(--primary);
+      box-shadow: 0 2px 12px rgba(79,142,247,0.15);
+      transform: scale(1.02);
+    }
+
+    /* فورم */
+    .tab-content        { display: none; flex-direction: column; gap: 14px; }
+    .tab-content.active { display: flex; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .field { position: relative; }
+    .field-icon {
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%); font-size: 1.1rem;
+      pointer-events: none; z-index: 1;
+    }
+
+    .input {
+      width: 100%; padding: 12px 44px 12px 16px;
+      border: 2px solid var(--border); border-radius: 12px;
+      font-family: inherit; font-size: 0.95rem; color: var(--text);
+      background: var(--bg); outline: none; transition: all 0.2s;
+    }
+    .input:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(79,142,247,0.1); }
+    .input::placeholder { color: #bbb; }
+
+    /* أزرار */
+    .btn-submit {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff; border: none; border-radius: 12px;
+      font-family: inherit; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; transition: all 0.25s; margin-top: 4px;
+    }
+    .btn-submit:hover   { filter: brightness(1.08); }
+    .btn-submit:active  { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    .btn-guest {
+      width: 100%; padding: 13px;
+      background: transparent; color: var(--primary);
+      border: 2px solid var(--primary); border-radius: 12px;
+      font-family: inherit; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; margin-top: 4px;
+    }
+    .btn-guest:hover { background: rgba(79,142,247,0.07); }
+
+    /* رسائل */
+    .msg-box { padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; text-align: center; display: none; margin-bottom: 4px; }
+    .msg-box.error   { background: #fff0ef; color: var(--danger); border: 1px solid #ffd5d2; display: block; }
+    .msg-box.success { background: #f0fff4; color: #27ae60; border: 1px solid #b7f5c9; display: block; }
+
+    /* فاصل */
+    .divider { display: flex; align-items: center; gap: 12px; color: var(--text-light); font-size: 0.82rem; margin: 2px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* تحميل */
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-left: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .card-footer { text-align: center; margin-top: 24px; font-size: 0.8rem; color: var(--text-light); }
+
+    @media (max-width: 480px) {
+      .card  { padding: 32px 22px 28px; border-radius: 22px; }
+      .logo-icon { width: 60px; height: 60px; font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+
+  <div class="card">
+
+    <div class="logo-area">
+      <div class="logo-icon">💬</div>
+      <div class="logo-title">شات لايف</div>
+      <div class="logo-sub">تواصل مع أصدقائك الآن</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">تسجيل دخول</button>
+      <button class="tab-btn"        onclick="switchTab('register')">حساب جديد</button>
+      <button class="tab-btn"        onclick="switchTab('guest')">زائر</button>
+    </div>
+
+    <div id="msg-box" class="msg-box"></div>
+
+    <!-- دخول -->
+    <div id="tab-login" class="tab-content active">
+      <div class="field">
+        <span class="field-icon">👤</span>
+        <input id="login-user" type="text" placeholder="اسم المستخدم" class="input" autocomplete="username">
+      </div>
+      <div class="field">
+        <span class="field-icon">🔒</span>
+        <input id="login-pass" type="password" placeholder="كلمة المرور" class="input" autocomplete="current-password">
+      </div>
+      <button class="btn-submit" id="btn-login" onclick="doLogin()">دخول</button>
+    </div>
+
+    <!-- تسجيل -->
+    <div id="tab-register" class="tab-content">
+      <div class="field">
+        <span class="field-icon">👤</span>
+        <input id="reg-user" type="text" placeholder="اسم المستخدم (3 أحرف على الأقل)" class="input" autocomplete="username">
+      </div>
+      <div class="field">
+        <span class="field-icon">🔒</span>
+        <input id="reg-pass" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" class="input" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <span class="field-icon">🔒</span>
+        <input id="reg-pass2" type="password" placeholder="تأكيد كلمة المرور" class="input" autocomplete="new-password">
+      </div>
+      <button class="btn-submit" id="btn-register" onclick="doRegister()">إنشاء حساب</button>
+    </div>
+
+    <!-- زائر -->
+    <div id="tab-guest" class="tab-content">
+      <div class="field">
+        <span class="field-icon">🙂</span>
+        <input id="guest-name" type="text" placeholder="اسمك (اختياري)" class="input" maxlength="20">
+      </div>
+      <div class="divider">أو ادخل مباشرة</div>
+      <button class="btn-guest" onclick="doGuest()">🚀 دخول كزائر</button>
+    </div>
+
+    <div class="card-footer">شات لايف &copy; 2025 — جميع الحقوق محفوظة</div>
+  </div>
+
+  <script>
+    // ===== تبويبات =====
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', ['login','register','guest'][i] === tab);
+      });
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+      clearMsg();
+    }
+
+    function showMsg(text, type) {
+      const el = document.getElementById('msg-box');
+      el.textContent = text;
+      el.className   = `msg-box ${type}`;
+    }
+    function clearMsg() {
+      const el = document.getElementById('msg-box');
+      el.textContent = '';
+      el.className   = 'msg-box';
+    }
+
+    function setLoading(btnId, loading, original) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.disabled = loading;
+      if (loading) {
+        btn.dataset.original = btn.textContent;
+        btn.innerHTML        = btn.textContent + ' <span class="spinner"></span>';
+      } else {
+        btn.innerHTML = btn.dataset.original || original || btn.innerHTML;
+      }
+    }
+
+    // ===== Device =====
+    function getDeviceInfo() {
+      const ua = navigator.userAgent;
+      return {
+        userAgent: ua,
+        platform:  navigator.platform,
+        language:  navigator.language,
+        screen:    `${screen.width}x${screen.height}`,
+        timezone:  Intl.DateTimeFormat().resolvedOptions().timeZone,
+        isMobile:  /Mobi|Android/i.test(ua),
+        os: /Windows/i.test(ua) ? 'Windows'
+          : /Mac/i.test(ua)     ? 'macOS'
+          : /Android/i.test(ua) ? 'Android'
+          : /iPhone|iPad/i.test(ua) ? 'iOS'
+          : /Linux/i.test(ua)   ? 'Linux' : 'Unknown',
+        browser: /Chrome/i.test(ua) && !/Edg/i.test(ua) ? 'Chrome'
+               : /Firefox/i.test(ua)  ? 'Firefox'
+               : /Safari/i.test(ua) && !/Chrome/i.test(ua) ? 'Safari'
+               : /Edg/i.test(ua)    ? 'Edge' : 'Other',
+      };
+    }
+    function getFingerprint(info) {
+      const str = JSON.stringify(info);
+      let h = 0;
+      for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h |= 0; }
+      return Math.abs(h).toString(16).padStart(8, '0');
+    }
+
+    function saveSession(data) {
+      sessionStorage.setItem('livechat_auth', JSON.stringify(data));
+    }
+
+    // ===== دخول =====
+    function doLogin() {
+      const username = document.getElementById('login-user').value.trim();
+      const password = document.getElementById('login-pass').value;
+      if (!username || !password) return showMsg('أدخل اسم المستخدم وكلمة المرور', 'error');
+
+      setLoading('btn-login', true);
+      clearMsg();
+
+      const info    = getDeviceInfo();
+      const payload = {
+        type:        'login',
+        username,
+        password,
+        isGuest:     false,
+        fingerprint: getFingerprint(info),
+        deviceInfo:  info,
+      };
+      if (username === 'admin') payload.ownerAuth = btoa(JSON.stringify({ username, password }));
+
+      // تحقق أولاً من الخادم
+      fetch('/api/login', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ username, password }),
+      })
+      .then(r => r.json())
+      .then(res => {
+        setLoading('btn-login', false);
+        if (res.ok) {
+          // إذا كان المالك، احفظ ownerAuth
+          if (res.user?.role === 'owner') {
+            payload.ownerAuth = btoa(JSON.stringify({ username, password }));
+          }
+          saveSession(payload);
+          window.location.href = 'index.html';
+        } else {
+          showMsg(res.error || 'فشل تسجيل الدخول', 'error');
+        }
+      })
+      .catch(() => {
+        setLoading('btn-login', false);
+        showMsg('تعذّر الاتصال بالخادم', 'error');
+      });
+    }
+
+    // ===== تسجيل =====
+    function doRegister() {
+      const username  = document.getElementById('reg-user').value.trim();
+      const password  = document.getElementById('reg-pass').value;
+      const password2 = document.getElementById('reg-pass2').value;
+
+      if (!username || !password)   return showMsg('أدخل اسم المستخدم وكلمة المرور', 'error');
+      if (username.length < 3)      return showMsg('الاسم يجب أن يكون 3 أحرف على الأقل', 'error');
+      if (password.length < 6)      return showMsg('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+      if (password !== password2)   return showMsg('كلمة المرور غير متطابقة', 'error');
+
+      setLoading('btn-register', true);
+      clearMsg();
+
+      fetch('/api/register', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ username, password }),
+      })
+      .then(r => r.json())
+      .then(res => {
+        setLoading('btn-register', false);
+        if (res.ok) {
+          showMsg('✅ تم التسجيل بنجاح! جاري الدخول...', 'success');
+          setTimeout(() => {
+            const info    = getDeviceInfo();
+            const payload = { type: 'login', username, password, isGuest: false, fingerprint: getFingerprint(info), deviceInfo: info };
+            saveSession(payload);
+            window.location.href = 'index.html';
+          }, 1200);
+        } else {
+          showMsg(res.error || 'حدث خطأ أثناء التسجيل', 'error');
+        }
+      })
+      .catch(() => {
+        setLoading('btn-register', false);
+        showMsg('تعذّر الاتصال بالخادم', 'error');
+      });
+    }
+
+    // ===== زائر =====
+    function doGuest() {
+      const username = document.getElementById('guest-name').value.trim() || `زائر_${Math.floor(Math.random() * 9999)}`;
+      const info     = getDeviceInfo();
+      const payload  = { type: 'guest', username, isGuest: true, fingerprint: getFingerprint(info), deviceInfo: info };
+      saveSession(payload);
+      window.location.href = 'index.html';
+    }
+
+    // ===== Enter =====
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const active = document.querySelector('.tab-content.active');
+      if (!active) return;
+      const id = active.id;
+      if (id === 'tab-login')    doLogin();
+      else if (id === 'tab-register') doRegister();
+      else if (id === 'tab-guest')    doGuest();
+    });
+
+    // إذا مسجل دخول مسبقاً
+    if (sessionStorage.getItem('livechat_auth')) {
+      window.location.href = 'index.html';
+    }
+
+    // عرض خطأ من الشات
+    const urlErr = new URLSearchParams(location.search).get('error');
+    if (urlErr) showMsg(decodeURIComponent(urlErr), 'error');
+  </script>
+</body>
+</html>

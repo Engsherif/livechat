@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: livechat-kawi-secure
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: OWNER_USERNAME
+        value: admin
+      - key: OWNER_PASSWORD
+        sync: false
+      - key: CORS_ORIGIN
+        value: "*"
